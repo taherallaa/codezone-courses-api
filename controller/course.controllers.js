@@ -7,7 +7,7 @@ const asyncHandler = require("express-async-handler");
 const courseModel = require("../model/course.modle");
 
 const getAllCourses = asyncHandler(async (req, res) => {
-  const courses = await courseModle.find();
+  const courses = await courseModle.find().select("-_id -__v");
   const countDocuments = parseInt(await courseModle.countDocuments());
 
   if (countDocuments === 0)
@@ -22,6 +22,7 @@ const getOneCourses = asyncHandler(async (req, res) => {
   if (courseID.length === 24) {
     await courseModel
       .findById(courseID)
+      .select("-_id -__v")
       .then((course) => {
         res.json(course);
       })
@@ -64,7 +65,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
       .then(() => {
         res.status(200).send("Course is is Deleted");
       })
-      .catch((err) => res.json({ error: err.message }));
+      .catch(() => res.status(404).send("Course isn't Found "));
   } else {
     res.status(404).json({ error: "Id must be 24 characters" });
   }

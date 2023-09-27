@@ -9,7 +9,7 @@ router.route("/").get(controller.getAllCourses).post(controller.createCourse);
 router
   .route("/:id")
   .get(controller.getOneCourses)
-  .post(controller.updateCourse)
+  .put(controller.updateCourse)
   .delete(controller.deleteCourse);
 
 module.exports = router;
