@@ -1,27 +1,27 @@
-const fs = require("node:fs");
-
 /// NOTE: Npm Packages...
-const courseModle = require("../model/course.modle");
-const { validationResult } = require("express-validator");
-const asyncHandler = require("express-async-handler");
-const courseModel = require("../model/course.modle");
 
-const getAllCourses = asyncHandler(async (req, res) => {
-  const courses = await courseModle.find().select("-_id -__v");
-  const countDocuments = parseInt(await courseModle.countDocuments());
+import * as course from "../model/course.modle.js";
+
+import asyncHandler from "express-async-handler";
+
+export const getAllCourses = asyncHandler(async (req, res) => {
+  const courses = await course.Model.find()
+    .skip(3)
+    .limit(3)
+    .select("-_id -__v");
+  const countDocuments = parseInt(await course.Model.countDocuments());
 
   if (countDocuments === 0)
     return res.status(404).json({ errors: "There Not Document ADD yet" });
 
-  res.status(200).json(courses);
+  res.status(200).json({ courses, countDocuments });
 });
 
-const getOneCourses = asyncHandler(async (req, res) => {
+export const getOneCourses = asyncHandler(async (req, res) => {
   const courseID = req.params.id;
 
   if (courseID.length === 24) {
-    await courseModel
-      .findById(courseID)
+    await course.Model.findById(courseID)
       .select("-_id -__v")
       .then((course) => {
         res.json(course);
@@ -33,20 +33,25 @@ const getOneCourses = asyncHandler(async (req, res) => {
 });
 
 /// Needed error handling
-const createCourse = asyncHandler(async (req, res) => {
+
+export const createCourse = asyncHandler(async (req, res) => {
   const createdCourse = req.body;
-  const newCourse = await courseModle.create(createdCourse);
-  if (!newCourse) return res.status(404).json({ error: "course not add" });
-  res.json({ createdCourse: newCourse });
+
+  await course.Model.create(createdCourse)
+    .then((newCourse) => {
+      res.json({ createdCourse: newCourse });
+    })
+    .catch(() => {
+      res.status(404).json({ error: "course not add" });
+    });
 });
 
-const updateCourse = asyncHandler(async (req, res) => {
+export const updateCourse = asyncHandler(async (req, res) => {
   const courseID = req.params.id;
   const courseUpated = req.body;
 
   if (courseID.length === 24) {
-    await courseModel
-      .findByIdAndUpdate(courseID, courseUpated)
+    await course.Model.findByIdAndUpdate(courseID, courseUpated)
       .then(() => {
         res.status(200).send("Course is updated");
       })
@@ -56,12 +61,11 @@ const updateCourse = asyncHandler(async (req, res) => {
   }
 });
 
-const deleteCourse = asyncHandler(async (req, res) => {
+export const deleteCourse = asyncHandler(async (req, res) => {
   const courseID = req.params.id;
 
   if (courseID.length === 24) {
-    await courseModel
-      .findByIdAndDelete(courseID)
+    await course.Model.findByIdAndDelete(courseID)
       .then(() => {
         res.status(200).send("Course is is Deleted");
       })
@@ -70,11 +74,3 @@ const deleteCourse = asyncHandler(async (req, res) => {
     res.status(404).json({ error: "Id must be 24 characters" });
   }
 });
-
-module.exports = {
-  getAllCourses,
-  getOneCourses,
-  updateCourse,
-  deleteCourse,
-  createCourse,
-};

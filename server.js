@@ -1,8 +1,6 @@
-const express = require("express");
-const fs = require("node:fs");
-
-const userRoutes = require("./routes/course.routes");
-const connect = require("./database/connectDB.js");
+import express from "express";
+import * as router from "./routes/course.routes.js";
+import * as connect from "./database/connectDB.js";
 
 /// connect to database
 connect.connectMongodbAtlas();
@@ -14,7 +12,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/api/courses", userRoutes);
+app.use("/api/v1/courses", router.router);
 
 app.listen(port, () => {
   console.log(`server is running on http:localhost:${port}`);

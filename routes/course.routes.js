@@ -1,8 +1,8 @@
-const router = require("express").Router();
-const { body, validationResult } = require("express-validator");
+import { Router } from "express";
 
-const validate = require("../validation/validate.schema");
-const controller = require("../controller/course.controllers");
+export const router = new Router();
+
+import * as controller from "../controller/course.controllers.js";
 
 router.route("/").get(controller.getAllCourses).post(controller.createCourse);
 
@@ -11,5 +11,3 @@ router
   .get(controller.getOneCourses)
   .put(controller.updateCourse)
   .delete(controller.deleteCourse);
-
-module.exports = router;

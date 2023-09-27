@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const courseSchema = new mongoose.Schema({
+export const courseSchema = new mongoose.Schema({
   title: {
     type: String,
     require: [true, "require title of course"],
@@ -10,5 +10,3 @@ const courseSchema = new mongoose.Schema({
     require: [true, "require price of course"],
   },
 });
-
-module.exports = courseSchema;
