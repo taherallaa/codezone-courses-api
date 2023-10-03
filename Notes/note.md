@@ -65,3 +65,93 @@ We use Event Loop to handle the following
         coursesRoutes.js
     server.js
   ```
+
+### Session 6
+
+- **jsend:** just standard for sending response in readable way
+
+- **req.query:**
+  query would be something like thais: http://localhost:3030/?limit=2&page=1
+  get from req query variable [limit, page]
+
+- **Pagination**:
+
+```javascript
+const limit = req.query.limit ?? 3;
+const page = req.query.page ?? 1;
+// equation of skip be like: (page-1)*limit
+const skip = (page - 1) * limit;
+find({}, { _id: false, __v: false }).limit(limit).skip(skip);
+```
+
+- **Handle Request that doesn't Exist**
+
+override express handler for request that doesn't exist
+
+```javascript
+app.all("*", (req, res, next) => {
+  // jsend specification
+  res
+    .status(404)
+    .json({ status: "error", message: "resourse is not availabe" });
+  next();
+});
+```
+
+- **cors npm pakeage**
+  cors is corss origin resourse share that policie prevent two diffierent port/origin to talk to each other
+
+```javascript
+app.use(cors());
+```
+
+- **async handler**:
+
+In this section there are two thing:
+
+1. async wrapper to handle try and catch and send error to the middleware
+
+```javascript
+(fun) => {
+  return (req, res, next) => {
+    fun(req, res, next).catch((error) => {
+      next(error);
+    });
+  };
+};
+
+// recive error into middleware be like that:
+// put it in the last server file...
+app.use(error, req,res,next){
+  res.status(5000) etc...
+}
+
+
+```
+
+2. making custom error class that extend for error
+
+```javascript
+class appError extend error {
+
+  constructor(){
+    super();
+  }
+
+  create(message, statusCode, statusText){
+    this.message = message;
+    this.statusCode = statusCode;
+    this.statusText = statusText;
+    return this;
+  }
+}
+
+```
+
+- Making utilts Folder that contain file return statusCodeText and file return customError...
+
+---
+
+### Session 8
+
+- Make schema and user validator npm package to validate email and can make more thing...

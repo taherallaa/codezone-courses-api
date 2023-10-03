@@ -1,5 +1,7 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-import { courseSchema } from "../schema/course.schema.js";
+const courseSchema = require("../schema/course.schema.js");
 
-export const Model = mongoose.model("courses", courseSchema);
+const courseModel = mongoose.model("courses", courseSchema);
+
+module.exports = courseModel;
