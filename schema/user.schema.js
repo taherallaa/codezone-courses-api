@@ -1,22 +1,29 @@
 const mongoose = require("mongoose");
-const { isEmail } = require("express-validator");
+const bcrypt = require("bcrypt");
+const mongooseUniqueValidator = require("mongoose-unique-validator");
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: [true, "username must be unique"],
-    required: [true, "Pleas, Enter username"],
+    unique: true,
   },
   email: {
     type: String,
-    unique: [true, "Email must be unique"],
-    required: [true, "Pleas, Enter Email"],
-    validate: [isEmail, "Please, Enter Valide Email"],
+    unique: true,
   },
   password: {
     type: String,
-    required: [true, "Pleas, Enter Password"],
   },
+});
+
+userSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+userSchema.plugin(mongooseUniqueValidator, {
+  message: "{PATH} must be unique.",
 });
 
 module.exports = userSchema;
