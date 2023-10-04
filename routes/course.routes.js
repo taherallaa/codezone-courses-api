@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const controller = require("../controller/course.controllers.js");
-const validateSchema = require("../validation/validate.course.schema.js");
+const userSchema = require("../validation/validate.course.schema.js");
 
 router
   .route("/")
   .get(controller.getAllCourses)
-  .post(validateSchema.validate(), controller.createCourse)
+  .post(userSchema.validate(), controller.createCourse)
   .delete(controller.deleteAllCourse);
 
 router

@@ -1,3 +1,4 @@
+const httpStarusText = require("../utilits/statuscode.text");
 class appError extends Error {
   constructor() {
     super();
@@ -6,7 +7,6 @@ class appError extends Error {
     this.message = message;
     this.statusText = statusText;
     this.statusCode = statusCode;
-
     return this;
   }
 }
